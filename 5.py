@@ -305,7 +305,7 @@ elif choose == "Make Prediction":
                    'TS', 'PS', 'RH2M', 'QV2M', 'PRECTOTCORR', 'T2M_MAX', 
                    'T2M_MIN', 'T2M_RANGE', 'WS2M', 'elevation', 'slope', 'soc', 'soilph',
                                ]], encoded_final], axis=1)
-                    # st.write(final_df)
+                    st.write(final_df)
                     final=final_df
                     # predicted_df = predict_crop_yield(final, progress_bar=progress_bar)
                     with st.spinner("Generating Result..."):
