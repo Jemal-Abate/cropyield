@@ -1,2 +1,2 @@
-pip install scikit-learn==1.5.2
-pip install joblib==1.2.0
+scikit-learn==1.5.2
+joblib==1.2.0
