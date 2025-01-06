@@ -387,8 +387,6 @@ elif choose == "Retrain Model":
     # Function to retrain the model
     
     def retrain_model_function(district_selected, dataset_paths):
-        
-        from stqdm import stqdm
         total_districts = len(district_selected)
         i=0
         # for district, dataset_path in zip(district_selected, dataset_paths):
