@@ -1,0 +1,12 @@
+[theme]
+base="light"
+
+[browser]
+gatherUsageStats = false
+
+[ui]
+hideSidebarNav = false  # Optionally hide the sidebar navigation.
+customMenuItems = false # Removes extra menu items.
+
+[global]
+showFooter = false
