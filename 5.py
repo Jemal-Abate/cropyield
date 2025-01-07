@@ -305,7 +305,7 @@ elif choose == "Make Prediction":
                    'TS', 'PS', 'RH2M', 'QV2M', 'PRECTOTCORR', 'T2M_MAX', 
                    'T2M_MIN', 'T2M_RANGE', 'WS2M', 'elevation', 'slope', 'soc', 'soilph',
                                ]], encoded_final], axis=1)
-                    st.write(final_df)
+                    # st.write(final_df)
                     final=final_df
                     # predicted_df = predict_crop_yield(final, progress_bar=progress_bar)
                     with st.spinner("Generating Result..."):
@@ -387,85 +387,25 @@ elif choose == "Retrain Model":
     # Function to retrain the model
     
     def retrain_model_function(district_selected, dataset_paths):
-        total_districts = len(district_selected)
-        i=0
-        # for district, dataset_path in zip(district_selected, dataset_paths):
-        # for district, dataset_path in stqdm(zip(district_selected, dataset_paths), total=total_districts):
-        
-        # for i, (district, dataset_path) in enumerate(stqdm(zip(district_selected, dataset_paths), total=total_districts)):
-        district_progress = st.progress(0)
-        for district, dataset_path in zip(district_selected, dataset_paths):
-            i=i+1
-            
-            # progress_desc = f"Processing {district} ({i + 1}/{total_districts})"
-            progress_desc = f"Processing district ({i}/{total_districts})"
-            # stqdm.write(progress_desc)
-            # st.text(progress_desc)
-            # percent=(i / total_districts)*100
-            # percent = format(percent, '.2f')
-            district_progress.progress((i) / total_districts, text=progress_desc)
-            data_scaled, scaler, data_original = preprocess_data(dataset_path)
-            X, y = prepare_data(data_scaled, time_steps)
-            
-            # Train-test split
-            train_size = int(0.8 * len(X))
-            X_train, X_test = X[:train_size], X[train_size:]
-            y_train, y_test = y[:train_size], y[train_size:]
-            
-            # Build and train the model
-            model = build_model((time_steps, X.shape[2]))
-            early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+        import requests
+        import os
+        import joblib
+        from stqdm import stqdm
+        import pandas as pd
+        import requests
+        from base64 import b64encode
 
-            # Create a progress bar
-            
-            epoch_progress = st.empty()  # To display the current epoch progress
-            
-            total_epoch=20
-            xx=(1/total_epoch)*100
-            x = math.trunc(xx)
-            
-            # st.write(x)
-            progress_bar = st.progress(1/total_epoch, text=district+" ("+str(x)+"%)")
-            def on_epoch_end(epoch, logs):
-                # Update progress bar and display current loss and metrics after each epoch
-                percentage=((epoch + 1)/total_epoch)*100
-                # percentage = format(percentage, '.0f')
-                percentage = math.trunc(percentage)
-                progress_bar.progress((epoch + 1) / total_epoch, text=district+" ("+str(percentage)+"%)")  # Assuming 10 epochs for example
-                # st.write(logs)
-                # epoch_progress.text(f"Epoch {epoch + 1}/{total_epoch} - Loss: {logs['loss']:.4f} - MAE: {logs['mae']:.4f} - MSE: {logs['mse']:.4f} - Val_Loss: {logs['val_loss']:.4f} - Val_MAE: {logs['val_mae']:.4f} - Val_MSE: {logs['val_mse']:.4f}")
+        # Define GitHub variables
+        token = st.secrets["GITHUB_TOKEN"]
+        repo = "Jemal-Abate/cropyield"  # Replace with your repository
+        commit_message_template = "Uploading {file_name} for district {district}"
 
-            # Fit the model with the custom callback
-            history = model.fit(
-                X_train, y_train,
-                validation_split=0.2,
-                epochs=total_epoch,
-                batch_size=32,
-                callbacks=[early_stopping, tf.keras.callbacks.LambdaCallback(on_epoch_end=on_epoch_end)],
-                verbose=0  # Set verbose to 0 to avoid Keras output in the console
-            )
-            
-            # Save the model and scaler
-            model_save_path = f"3_Models/weather_models/{district}_lstm_model.h5"
-            scaler_save_path = f"3_Models/weather_models/{district}_scaler.pkl"
-            os.makedirs("3_Models/weather_models", exist_ok=True)
-            model.save(model_save_path)
-            joblib.dump(scaler, scaler_save_path)
-            import requests
-            from base64 import b64encode
-            # Encode CSV content in Base64
-            encoded_content = b64encode(scaler.encode()).decode()
-            
-            # Define variables
-            token = "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"  # Replace with your actual token
-            repo = "Jemal-Abate/cropyield"
-            file_path = scaler_save_path  # Path in the repository where the file will be uploaded
-            commit_message = "Uploading a DataFrame as a CSV file"
-            
-            # API URL
-            url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
-            
-            # Headers and payload
+        # Function to upload a file to GitHub
+        def upload_to_github(local_path, repo_path, commit_message):
+            with open(local_path, "rb") as file:
+                file_content = file.read()
+            encoded_content = b64encode(file_content).decode()
+            url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
             headers = {
                 "Authorization": f"token {token}",
                 "Accept": "application/vnd.github.v3+json"
@@ -474,12 +414,63 @@ elif choose == "Retrain Model":
                 "message": commit_message,
                 "content": encoded_content
             }
-            # Make the request
             response = requests.put(url, json=data, headers=headers)
+            if response.status_code in [200, 201]:
+                st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
+            else:
+                st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
 
+        # Main training logic
+        total_districts = len(district_selected)
+        i = 0
+        district_progress = st.progress(0)
+        for district, dataset_path in zip(district_selected, dataset_paths):
+            i += 1
+            progress_desc = f"Processing district ({i}/{total_districts})"
+            district_progress.progress(i / total_districts, text=progress_desc)
+            data_scaled, scaler, data_original = preprocess_data(dataset_path)
+            X, y = prepare_data(data_scaled, time_steps)
 
+            # Train-test split
+            train_size = int(0.8 * len(X))
+            X_train, X_test = X[:train_size], X[train_size:]
+            y_train, y_test = y[:train_size], y[train_size:]
 
-            
+            # Build and train the model
+            model = build_model((time_steps, X.shape[2]))
+            early_stopping = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
+
+            total_epoch = 1
+            progress_bar = st.progress(0, text=f"{district} (0%)")
+            def on_epoch_end(epoch, logs):
+                percentage = ((epoch + 1) / total_epoch) * 100
+                progress_bar.progress((epoch + 1) / total_epoch, text=f"{district} ({int(percentage)}%)")
+
+            history = model.fit(
+                X_train, y_train,
+                validation_split=0.2,
+                epochs=total_epoch,
+                batch_size=32,
+                callbacks=[early_stopping, tf.keras.callbacks.LambdaCallback(on_epoch_end=on_epoch_end)],
+                verbose=0
+            )
+
+            # Save the model and scaler locally
+            os.makedirs("3_Models/weather_models", exist_ok=True)
+            model_save_path = f"3_Models/weather_models/{district}_lstm_model.h5"
+            scaler_save_path = f"3_Models/weather_models/{district}_scaler.pkl"
+            model.save(model_save_path)
+            joblib.dump(scaler, scaler_save_path)
+
+            # Upload the files to GitHub
+            # model_repo_path = f"models/{district}_lstm_model.h5"
+            model_repo_path = model_save_path
+            # scaler_repo_path = f"models/{district}_scaler.pkl"
+            scaler_repo_path = scaler_save_path
+
+            upload_to_github(model_save_path, model_repo_path, commit_message_template.format(file_name="model", district=district))
+            upload_to_github(scaler_save_path, scaler_repo_path, commit_message_template.format(file_name="scaler", district=district))
+
             progress_bar.empty()
             
             # st.write(f"Model and scaler have been retrained and saved for {district}")
