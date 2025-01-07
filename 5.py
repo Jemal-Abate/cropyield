@@ -451,6 +451,35 @@ elif choose == "Retrain Model":
             os.makedirs("3_Models/weather_models", exist_ok=True)
             model.save(model_save_path)
             joblib.dump(scaler, scaler_save_path)
+            import requests
+            from base64 import b64encode
+            # Encode CSV content in Base64
+            encoded_content = b64encode(scaler.encode()).decode()
+            
+            # Define variables
+            token = "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"  # Replace with your actual token
+            repo = "Jemal-Abate/cropyield"
+            file_path = scaler_save_path  # Path in the repository where the file will be uploaded
+            commit_message = "Uploading a DataFrame as a CSV file"
+            
+            # API URL
+            url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
+            
+            # Headers and payload
+            headers = {
+                "Authorization": f"token {token}",
+                "Accept": "application/vnd.github.v3+json"
+            }
+            data = {
+                "message": commit_message,
+                "content": encoded_content
+            }
+            # Make the request
+            response = requests.put(url, json=data, headers=headers)
+
+
+
+            
             progress_bar.empty()
             
             # st.write(f"Model and scaler have been retrained and saved for {district}")
