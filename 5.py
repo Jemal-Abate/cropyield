@@ -439,7 +439,7 @@ elif choose == "Retrain Model":
             model = build_model((time_steps, X.shape[2]))
             early_stopping = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
 
-            total_epoch = 1
+            total_epoch = 100
             progress_bar = st.progress(0, text=f"{district} (0%)")
             def on_epoch_end(epoch, logs):
                 percentage = ((epoch + 1) / total_epoch) * 100
