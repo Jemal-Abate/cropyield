@@ -21,6 +21,15 @@ import streamlit.components.v1 as html
 import tensorflow as tf
 import time
 import math
+st.markdown('''
+<style>
+.stApp [data-testid="stToolbar"]{
+    display:none;
+}
+</style>
+''', unsafe_allow_html=True)
+
+
 ohe_loaded = joblib.load('3_Models/transform_ohe.pkl')
 df = pd.read_csv('bbox_and_commons.csv')
 districts = df['district'].tolist()
