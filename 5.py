@@ -390,7 +390,6 @@ elif choose == "Retrain Model":
         import requests
         import os
         import joblib
-        from stqdm import stqdm
         import pandas as pd
         import requests
         from base64 import b64encode
