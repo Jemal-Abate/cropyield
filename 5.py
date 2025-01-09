@@ -410,24 +410,78 @@ elif choose == "Retrain Model":
 
         # Function to upload a file to GitHub
         def upload_to_github(local_path, repo_path, commit_message):
-            with open(local_path, "rb") as file:
-                file_content = file.read()
-            encoded_content = b64encode(file_content).decode()
+            # Step 1: Check if the file exists in the repository
             url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
             headers = {
                 "Authorization": f"token {token}",
                 "Accept": "application/vnd.github.v3+json"
             }
+            response = requests.get(url, headers=headers)
+            
+            # Step 2: Get the sha of the file if it exists
+            sha = None
+            if response.status_code == 200:
+                sha = response.json()['sha']
+            
+            # Step 3: Read the file content and encode it
+            with open(local_path, "rb") as file:
+                file_content = file.read()
+            encoded_content = b64encode(file_content).decode()
+            
+            # Step 4: Prepare the data for uploading
             data = {
                 "message": commit_message,
                 "content": encoded_content
             }
+            
+            # Include sha in the data if file exists
+            if sha:
+                data["sha"] = sha
+            
+            # Step 5: Upload the file to GitHub
             response = requests.put(url, json=data, headers=headers)
+            
             if response.status_code in [200, 201]:
                 st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
             else:
                 st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
-
+        # Function to upload a file to GitHub
+        def upload_to_github1(local_path, repo_path, commit_message):
+            # Step 1: Check if the file exists in the repository
+            url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
+            headers = {
+                "Authorization": f"token {token}",
+                "Accept": "application/vnd.github.v3+json"
+            }
+            response = requests.get(url, headers=headers)
+            
+            # Step 2: Get the sha of the file if it exists
+            sha = None
+            if response.status_code == 200:
+                sha = response.json()['sha']
+            
+            # Step 3: Read the file content and encode it
+            with open(local_path, "rb") as file:
+                file_content = file.read()
+            encoded_content = b64encode(file_content).decode()
+            
+            # Step 4: Prepare the data for uploading
+            data = {
+                "message": commit_message,
+                "content": encoded_content
+            }
+            
+            # Include sha in the data if file exists
+            if sha:
+                data["sha"] = sha
+            
+            # Step 5: Upload the file to GitHub
+            response = requests.put(url, json=data, headers=headers)
+            
+            if response.status_code in [200, 201]:
+                st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
+            else:
+                st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
         # Main training logic
         total_districts = len(district_selected)
         i = 0
@@ -477,7 +531,7 @@ elif choose == "Retrain Model":
             scaler_repo_path = scaler_save_path
 
             upload_to_github(model_save_path, model_repo_path, commit_message_template.format(file_name="model", district=district))
-            upload_to_github(scaler_save_path, scaler_repo_path, commit_message_template.format(file_name="scaler", district=district))
+            upload_to_github1(scaler_save_path, scaler_repo_path, commit_message_template.format(file_name="scaler", district=district))
 
             progress_bar.empty()
             
