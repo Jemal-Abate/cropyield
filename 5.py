@@ -441,10 +441,10 @@ elif choose == "Retrain Model":
             # Step 5: Upload the file to GitHub
             response = requests.put(url, json=data, headers=headers)
             
-            if response.status_code in [200, 201]:
-                st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
-            else:
-                st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
+            # if response.status_code in [200, 201]:
+            #     st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
+            # else:
+            #     st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
         # Function to upload a file to GitHub
         def upload_to_github1(local_path, repo_path, commit_message):
             # Step 1: Check if the file exists in the repository
@@ -478,10 +478,10 @@ elif choose == "Retrain Model":
             # Step 5: Upload the file to GitHub
             response = requests.put(url, json=data, headers=headers)
             
-            if response.status_code in [200, 201]:
-                st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
-            else:
-                st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
+            # if response.status_code in [200, 201]:
+            #     st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
+            # else:
+            #     st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
         # Main training logic
         total_districts = len(district_selected)
         i = 0
