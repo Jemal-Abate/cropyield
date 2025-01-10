@@ -135,7 +135,7 @@ def retrain_model_function(district_selected, dataset_paths):
         model = build_model((time_steps, X.shape[2]))
         early_stopping = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
 
-        total_epoch = 1
+        total_epoch = 20
         perc=(1/total_epoch) * 100
         progress_bar = st.progress(perc, text=f"{district} ({int(perc)}%)")
         def on_epoch_end(epoch, logs):
