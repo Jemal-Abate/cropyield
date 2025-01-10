@@ -395,166 +395,166 @@ elif choose == "Retrain Model":
 
     # Function to retrain the model
     
-    def retrain_model_function(district_selected, dataset_paths):
-        import requests
-        import os
-        import joblib
-        import pandas as pd
-        import requests
-        from base64 import b64encode
+        def retrain_model_function(district_selected, dataset_paths):
+            import requests
+            import os
+            import joblib
+            import pandas as pd
+            import requests
+            from base64 import b64encode
 
-        # Define GitHub variables
-        token = st.secrets["GITHUB_TOKEN"]
-        repo = "Jemal-Abate/cropyield"  # Replace with your repository
-        commit_message_template = "Uploading {file_name} for district {district}"
+            # Define GitHub variables
+            token = st.secrets["GITHUB_TOKEN"]
+            repo = "Jemal-Abate/cropyield"  # Replace with your repository
+            commit_message_template = "Uploading {file_name} for district {district}"
 
-        # Function to upload a file to GitHub
-        def upload_to_github(local_path, repo_path, commit_message):
-            # Step 1: Check if the file exists in the repository
-            url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
-            headers = {
-                "Authorization": f"token {token}",
-                "Accept": "application/vnd.github.v3+json"
-            }
-            response = requests.get(url, headers=headers)
-            
-            # Step 2: Get the sha of the file if it exists
-            sha = None
-            if response.status_code == 200:
-                sha = response.json()['sha']
-            
-            # Step 3: Read the file content and encode it
-            with open(local_path, "rb") as file:
-                file_content = file.read()
-            encoded_content = b64encode(file_content).decode()
-            
-            # Step 4: Prepare the data for uploading
-            data = {
-                "message": commit_message,
-                "content": encoded_content
-            }
-            
-            # Include sha in the data if file exists
-            if sha:
-                data["sha"] = sha
-            
-            # Step 5: Upload the file to GitHub
-            response = requests.put(url, json=data, headers=headers)
-            
-            # if response.status_code in [200, 201]:
-            #     st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
-            # else:
-            #     st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
-        # Function to upload a file to GitHub
-        def upload_to_github1(local_path, repo_path, commit_message):
-            # Step 1: Check if the file exists in the repository
-            url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
-            headers = {
-                "Authorization": f"token {token}",
-                "Accept": "application/vnd.github.v3+json"
-            }
-            response = requests.get(url, headers=headers)
-            
-            # Step 2: Get the sha of the file if it exists
-            sha = None
-            if response.status_code == 200:
-                sha = response.json()['sha']
-            
-            # Step 3: Read the file content and encode it
-            with open(local_path, "rb") as file:
-                file_content = file.read()
-            encoded_content = b64encode(file_content).decode()
-            
-            # Step 4: Prepare the data for uploading
-            data = {
-                "message": commit_message,
-                "content": encoded_content
-            }
-            
-            # Include sha in the data if file exists
-            if sha:
-                data["sha"] = sha
-            
-            # Step 5: Upload the file to GitHub
-            response = requests.put(url, json=data, headers=headers)
-            
-            # if response.status_code in [200, 201]:
-            #     st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
-            # else:
-            #     st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
-        # Main training logic
-        total_districts = len(district_selected)
-        i = 0
-        district_progress = st.progress(0)
-        for district, dataset_path in zip(district_selected, dataset_paths):
-            i += 1
-            progress_desc = f"Processing district ({i}/{total_districts})"
-            district_progress.progress(i / total_districts, text=progress_desc)
-            data_scaled, scaler, data_original = preprocess_data(dataset_path)
-            X, y = prepare_data(data_scaled, time_steps)
+            # Function to upload a file to GitHub
+            def upload_to_github(local_path, repo_path, commit_message):
+                # Step 1: Check if the file exists in the repository
+                url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
+                headers = {
+                    "Authorization": f"token {token}",
+                    "Accept": "application/vnd.github.v3+json"
+                }
+                response = requests.get(url, headers=headers)
+                
+                # Step 2: Get the sha of the file if it exists
+                sha = None
+                if response.status_code == 200:
+                    sha = response.json()['sha']
+                
+                # Step 3: Read the file content and encode it
+                with open(local_path, "rb") as file:
+                    file_content = file.read()
+                encoded_content = b64encode(file_content).decode()
+                
+                # Step 4: Prepare the data for uploading
+                data = {
+                    "message": commit_message,
+                    "content": encoded_content
+                }
+                
+                # Include sha in the data if file exists
+                if sha:
+                    data["sha"] = sha
+                
+                # Step 5: Upload the file to GitHub
+                response = requests.put(url, json=data, headers=headers)
+                
+                if response.status_code in [200, 201]:
+                    st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
+                else:
+                    st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
+            # Function to upload a file to GitHub
+            def upload_to_github1(local_path, repo_path, commit_message):
+                # Step 1: Check if the file exists in the repository
+                url = f"https://api.github.com/repos/{repo}/contents/{repo_path}"
+                headers = {
+                    "Authorization": f"token {token}",
+                    "Accept": "application/vnd.github.v3+json"
+                }
+                response = requests.get(url, headers=headers)
+                
+                # Step 2: Get the sha of the file if it exists
+                sha = None
+                if response.status_code == 200:
+                    sha = response.json()['sha']
+                
+                # Step 3: Read the file content and encode it
+                with open(local_path, "rb") as file:
+                    file_content = file.read()
+                encoded_content = b64encode(file_content).decode()
+                
+                # Step 4: Prepare the data for uploading
+                data = {
+                    "message": commit_message,
+                    "content": encoded_content
+                }
+                
+                # Include sha in the data if file exists
+                if sha:
+                    data["sha"] = sha
+                
+                # Step 5: Upload the file to GitHub
+                response = requests.put(url, json=data, headers=headers)
+                
+                if response.status_code in [200, 201]:
+                    st.write(f"File '{repo_path}' uploaded successfully to GitHub!")
+                else:
+                    st.write(f"Error uploading '{repo_path}': {response.status_code} - {response.json()}")
+            # Main training logic
+            total_districts = len(district_selected)
+            i = 0
+            district_progress = st.progress(0)
+            for district, dataset_path in zip(district_selected, dataset_paths):
+                i += 1
+                progress_desc = f"Processing district ({i}/{total_districts})"
+                district_progress.progress(i / total_districts, text=progress_desc)
+                data_scaled, scaler, data_original = preprocess_data(dataset_path)
+                X, y = prepare_data(data_scaled, time_steps)
 
-            # Train-test split
-            train_size = int(0.8 * len(X))
-            X_train, X_test = X[:train_size], X[train_size:]
-            y_train, y_test = y[:train_size], y[train_size:]
+                # Train-test split
+                train_size = int(0.8 * len(X))
+                X_train, X_test = X[:train_size], X[train_size:]
+                y_train, y_test = y[:train_size], y[train_size:]
 
-            # Build and train the model
-            model = build_model((time_steps, X.shape[2]))
-            early_stopping = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
+                # Build and train the model
+                model = build_model((time_steps, X.shape[2]))
+                early_stopping = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
 
-            total_epoch = 25
-            progress_bar = st.progress(0, text=f"{district} (0%)")
-            def on_epoch_end(epoch, logs):
-                percentage = ((epoch + 1) / total_epoch) * 100
-                progress_bar.progress((epoch + 1) / total_epoch, text=f"{district} ({int(percentage)}%)")
+                total_epoch = 1
+                progress_bar = st.progress(0, text=f"{district} (0%)")
+                def on_epoch_end(epoch, logs):
+                    percentage = ((epoch + 1) / total_epoch) * 100
+                    progress_bar.progress((epoch + 1) / total_epoch, text=f"{district} ({int(percentage)}%)")
 
-            history = model.fit(
-                X_train, y_train,
-                validation_split=0.2,
-                epochs=total_epoch,
-                batch_size=32,
-                callbacks=[early_stopping, tf.keras.callbacks.LambdaCallback(on_epoch_end=on_epoch_end)],
-                verbose=0
-            )
+                history = model.fit(
+                    X_train, y_train,
+                    validation_split=0.2,
+                    epochs=total_epoch,
+                    batch_size=32,
+                    callbacks=[early_stopping, tf.keras.callbacks.LambdaCallback(on_epoch_end=on_epoch_end)],
+                    verbose=0
+                )
 
-            # Save the model and scaler locally
-            os.makedirs("3_Models/weather_models", exist_ok=True)
-            model_save_path = f"3_Models/weather_models/{district}_lstm_model.h5"
-            scaler_save_path = f"3_Models/weather_models/{district}_scaler.pkl"
-            model.save(model_save_path)
-            joblib.dump(scaler, scaler_save_path)
+                # Save the model and scaler locally
+                os.makedirs("3_Models/weather_models", exist_ok=True)
+                model_save_path = f"3_Models/weather_models/{district}_lstm_model.h5"
+                scaler_save_path = f"3_Models/weather_models/{district}_scaler.pkl"
+                model.save(model_save_path)
+                joblib.dump(scaler, scaler_save_path)
 
-            # Upload the files to GitHub
-            # model_repo_path = f"models/{district}_lstm_model.h5"
-            model_repo_path = model_save_path
-            # scaler_repo_path = f"models/{district}_scaler.pkl"
-            scaler_repo_path = scaler_save_path
+                # Upload the files to GitHub
+                # model_repo_path = f"models/{district}_lstm_model.h5"
+                model_repo_path = model_save_path
+                # scaler_repo_path = f"models/{district}_scaler.pkl"
+                scaler_repo_path = scaler_save_path
 
-            upload_to_github(model_save_path, model_repo_path, commit_message_template.format(file_name="model", district=district))
-            upload_to_github1(scaler_save_path, scaler_repo_path, commit_message_template.format(file_name="scaler", district=district))
+                upload_to_github(model_save_path, model_repo_path, commit_message_template.format(file_name="model", district=district))
+                upload_to_github1(scaler_save_path, scaler_repo_path, commit_message_template.format(file_name="scaler", district=district))
 
-            progress_bar.empty()
-            
-            # st.write(f"Model and scaler have been retrained and saved for {district}")
-        district_progress.empty()
-        st.success("Training Completed!")
+                progress_bar.empty()
+                
+                # st.write(f"Model and scaler have been retrained and saved for {district}")
+            district_progress.empty()
+            st.success("Training Completed!")
 
-    # Trigger retraining if selected
-    # if retrain_model:
-        # with st.spinner("Please Wait, Training Model..."):
-            # retrain_model_function(district_selected, dataset_paths)
-    if "processing" not in st.session_state:
-        st.session_state.processing = False
-    # Create a placeholder for the button
-    button_placeholder = st.empty()
+        # Trigger retraining if selected
+        # if retrain_model:
+            # with st.spinner("Please Wait, Training Model..."):
+                # retrain_model_function(district_selected, dataset_paths)
+        if "processing" not in st.session_state:
+            st.session_state.processing = False
+        # Create a placeholder for the button
+        button_placeholder = st.empty()
 
-    # Show the button only if not processing
-    if not st.session_state.processing:
-        # Show the button with a unique key using a combination of the processing status
-        if button_placeholder.button("Retrain", key="run_task_button_visible"):
-            st.session_state.processing = True
-            button_placeholder.empty()  # Hide the button during task
-            with st.spinner("Please Wait, Training Model..."):
-                retrain_model_function(district_selected, dataset_paths)
-                st.session_state.processing = False  # Reset the processing flag
-                button_placeholder.button("Retrain", key="run_task_button_complete")
+        # Show the button only if not processing
+        if not st.session_state.processing:
+            # Show the button with a unique key using a combination of the processing status
+            if button_placeholder.button("Retrain", key="run_task_button_visible"):
+                st.session_state.processing = True
+                button_placeholder.empty()  # Hide the button during task
+                with st.spinner("Please Wait, Training Model..."):
+                    retrain_model_function(district_selected, dataset_paths)
+                    st.session_state.processing = False  # Reset the processing flag
+                    button_placeholder.button("Retrain", key="run_task_button_complete")
