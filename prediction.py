@@ -3,7 +3,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
-def predict_crop_yield(df, encoded_final):
+def predict_crop_yield(df, encoded_final, ohe_loaded):
     # Load pre-trained model
     model_rf = joblib.load('3_Models/yield_models/cereals_rf.pkl')
     # Make predictions

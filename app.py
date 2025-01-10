@@ -181,7 +181,7 @@ elif choose == "Make Prediction":
                     final=final_df
                     # predicted_df = predict_crop_yield(final, progress_bar=progress_bar)
                     with st.spinner("Generating Result..."):
-                        predicted_df = prediction.predict_crop_yield(final, encoded_final)
+                        predicted_df = prediction.predict_crop_yield(final, encoded_final, ohe_loaded)
                     season=predicted_df['season'].tolist()
                     tstr = f'Predicted Production in District: {district_selected}   Season: {season[0]}'
                     st.success("Prediction Done!")
