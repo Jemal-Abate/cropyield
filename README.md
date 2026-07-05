@@ -15,6 +15,24 @@ Install the required packages:
 
 pip install -r requirements.txt
 
-# Citation
-@article{Abate2025, author = {Jemal Abate and Araba Aman and Dima Adem}, title = {Integration of satellite data for predicting crop yields in Eastern Ethiopia using machine learning}, journal = {Scientific Reports}, volume = {15}, pages = {33809}, year = {2025}, doi = {10.1038/s41598-025-00810-z} }
+## Citation
+
+If you use this repository in your research, please cite the following paper:
+
+> **Abate, J., Aman, A., & Adem, D.** (2025). *Integration of satellite data for predicting crop yields in Eastern Ethiopia using machine learning*. **Scientific Reports**, 15, 33809. https://doi.org/10.1038/s41598-025-00810-z
+
+### BibTeX
+
+```bibtex
+@article{Abate2025,
+  author  = {Abate, Jemal and Aman, Araba and Adem, Dima},
+  title   = {Integration of Satellite Data for Predicting Crop Yields in Eastern Ethiopia Using Machine Learning},
+  journal = {Scientific Reports},
+  volume  = {15},
+  pages   = {33809},
+  year    = {2025},
+  doi     = {10.1038/s41598-025-00810-z},
+  url     = {https://doi.org/10.1038/s41598-025-00810-z}
+}
+```
 
